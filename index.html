@@ -31,13 +31,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:url" content="https://magicdays.dongfeng-auto.es/">
 <meta property="og:title" content="MAGIC DAYS Dongfeng: del 9 al 12 de diciembre">
 <meta property="og:description" content="Test drive gratis del BOX, VIGO y MAGE PHEV en 27 concesionarios. Toda la gama con etiqueta CERO y 10 años de garantía de batería.">
-<meta property="og:image" content="https://magicdays.dongfeng-auto.es/img/og-portada-23nov.jpg">
+<meta property="og:image" content="https://magicdays.dongfeng-auto.es/img/og-portada-24nov.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="675">
 <meta property="og:image:alt" content="Dongfeng BOX, VIGO y MAGE PHEV">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MAGIC DAYS Dongfeng: del 9 al 12 de diciembre">
-<meta name="twitter:image" content="https://magicdays.dongfeng-auto.es/img/og-portada-23nov.jpg">
+<meta name="twitter:image" content="https://magicdays.dongfeng-auto.es/img/og-portada-24nov.jpg">
 <!-- Datos estructurados para buscadores y asistentes de IA: evento, modelos y preguntas frecuentes -->
 <script type="application/ld+json">
 {
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       "eventStatus": "https://schema.org/EventScheduled",
       "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
       "url": "https://magicdays.dongfeng-auto.es/",
-      "image": "https://magicdays.dongfeng-auto.es/img/portada-magic-days.webp",
+      "image": "https://magicdays.dongfeng-auto.es/img/portada-magic-days-24nov.webp",
       "location": {
         "@type": "Place",
         "name": "Red de 27 concesionarios oficiales Dongfeng en España",
@@ -315,7 +315,7 @@ html{scroll-padding-top:calc(var(--header-h) + 24px)}
 .form-frame-wrap{position:relative;background:var(--df-white)}
 /* Altura generosa para que el formulario completo quepa sin doble scroll.
    Si el Apps Script envía su altura por postMessage, el JS la ajusta automáticamente. */
-.form-frame{display:block;width:100%;max-width:720px;height:1300px;margin:0 auto;border:0;background:var(--df-white);scroll-margin-top:90px}
+.form-frame{display:block;width:100%;max-width:720px;height:1500px;margin:0 auto;border:0;background:var(--df-white);scroll-margin-top:90px}
 .form-loading{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-top:80px;font-size:14px;color:var(--df-grey-600);pointer-events:none;transition:opacity .3s}
 .form-loading.is-hidden{opacity:0}
 .form-fallback{padding:16px 20px;border-top:1px solid var(--df-grey-300);font-size:14px;text-align:center;color:var(--df-grey-600)}
@@ -544,7 +544,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section class="hero" id="inicio">
     <!-- Imagen de portada (carpeta img/) -->
     <div class="hero__visual">
-      <img src="img/portada-magic-days.webp" alt="Dongfeng BOX, VIGO y MAGE PHEV aparcados juntos bajo una aurora boreal" width="2000" height="1125" fetchpriority="high">
+      <img src="img/portada-magic-days-24nov.webp" alt="Dongfeng BOX, VIGO y MAGE PHEV aparcados juntos bajo una aurora boreal" width="2000" height="1125" fetchpriority="high">
     </div>
     <div class="wrap hero__inner">
       <div class="hero__main">
@@ -1257,7 +1257,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (!/\.googleusercontent\.com$/.test(host)) return;   // solo mensajes del formulario
     var d = e.data || {};
     if (d.type === "dongfeng-td:altura" && d.altura > 200) {
-      frame.style.height = Math.ceil(d.altura) + "px";        // altura automática, sin barras de desplazamiento
+      frame.style.height = (Math.ceil(d.altura) + 48) + "px";   // +48: el formulario mide solo #app y deja ~20 px fuera (BOM antes de #app); sin margen su documento queda con scroll propio y en iOS atrapa el dedo        // altura automática, sin barras de desplazamiento
     }
     if (d.type === "dongfeng-td:reserva") {
       frame.scrollIntoView({ behavior: "smooth", block: "start" });

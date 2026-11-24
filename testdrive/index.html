@@ -23,7 +23,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:site_name" content="Dongfeng España">
 <meta property="og:title" content="Reserva tu test drive | Dongfeng">
 <meta property="og:description" content="Elige concesionario, modelo, día y hora. Gratis y sin compromiso.">
-<meta property="og:image" content="https://magicdays.dongfeng-auto.es/img/og-portada-23nov.jpg">
+<meta property="og:image" content="https://magicdays.dongfeng-auto.es/img/og-portada-24nov.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -49,7 +49,7 @@ h1{font-size:clamp(24px,5vw,34px);line-height:1.15;margin:0 0 8px;font-weight:70
 .lead{margin:0 0 22px;color:var(--df-grey-600);font-size:16px}
 .form-card{background:var(--df-white);border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.12)}
 .form-frame-wrap{position:relative;background:var(--df-white)}
-.form-frame{display:block;width:100%;max-width:720px;height:1300px;margin:0 auto;border:0;background:var(--df-white)}
+.form-frame{display:block;width:100%;max-width:720px;height:1500px;margin:0 auto;border:0;background:var(--df-white)}
 .form-loading{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-top:80px;font-size:14px;color:var(--df-grey-600);pointer-events:none;transition:opacity .3s}
 .form-loading.is-hidden{opacity:0}
 .form-fallback{margin:0;padding:16px 20px;border-top:1px solid var(--df-grey-300);font-size:14px;text-align:center;color:var(--df-grey-600)}
@@ -98,7 +98,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (!/\.googleusercontent\.com$/.test(host)) return;
     var d = e.data || {};
     if (d.type === "dongfeng-td:altura" && d.altura > 200) {
-      frame.style.height = Math.ceil(d.altura) + "px";
+      frame.style.height = (Math.ceil(d.altura) + 48) + "px";   // +48: el formulario mide solo #app y deja ~20 px fuera (BOM antes de #app); sin margen su documento queda con scroll propio y en iOS atrapa el dedo
     }
     if (d.type === "dongfeng-td:reserva") {
       frame.scrollIntoView({ behavior: "smooth", block: "start" });
