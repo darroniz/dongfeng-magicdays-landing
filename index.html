@@ -475,6 +475,7 @@ a.press__card:hover{border-color:var(--df-ink);transform:translateY(-2px)}
   .sticky-cta .btn{width:auto;padding:0 32px}
 }
 </style>
+<link rel="stylesheet" href="formulario.css">
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -591,33 +592,134 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <div class="form-card">
-        <div class="form-frame-wrap">
-          <!--
-            IMPORTANTE (Google Apps Script):
-            Para que este formulario se pueda embeber en un iframe, el doGet() del Apps Script debe servir la página con:
-              return HtmlService.createHtmlOutputFromFile('Index')
-                .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-                .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-            Sin ALLOWALL el navegador bloquea el iframe y solo funcionará el enlace de respaldo.
+        <!-- Formulario nativo de reserva (sin iframe). Lógica en formulario.js; endpoint en DFF_ENDPOINT. -->
+        <div class="dff" id="dff">
+          <p class="dff-demo" id="dff-demo" hidden>Modo demostración: la disponibilidad es simulada y no se envía ninguna reserva.</p>
+          <form id="dff-form" novalidate>
+            <div class="dff-modo" role="group" aria-label="¿Cómo quieres que te atendamos?">
+              <button type="button" class="dff-modo-op" data-modo="reserva" aria-pressed="true"><strong>Reservar test drive</strong><span>Elige día y hora</span></button>
+              <button type="button" class="dff-modo-op" data-modo="llamada" aria-pressed="false"><strong>Prefiero que me llaméis</strong><span>Os dejo mis datos</span></button>
+            </div>
+            <fieldset>
+              <legend>Tus datos</legend>
+              <div class="dff-campo">
+                <label for="dff-nombre">Nombre y apellidos</label>
+                <input id="dff-nombre" type="text" autocomplete="name" maxlength="80" required aria-describedby="dff-err-nombre">
+                <p class="dff-err" id="dff-err-nombre"></p>
+              </div>
+              <div class="dff-fila2">
+                <div class="dff-campo">
+                  <label for="dff-telefono">Teléfono</label>
+                  <input id="dff-telefono" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="600 000 000" required aria-describedby="dff-err-telefono">
+                  <p class="dff-err" id="dff-err-telefono"></p>
+                </div>
+                <div class="dff-campo">
+                  <label for="dff-email">Email</label>
+                  <input id="dff-email" type="email" autocomplete="email" maxlength="120" placeholder="nombre@correo.com" required aria-describedby="dff-err-email">
+                  <p class="dff-err" id="dff-err-email"></p>
+                </div>
+              </div>
+            </fieldset>
 
-            Parámetros y mensajes del formulario:
-            · La URL lleva ?origen=web-dongfeng y, al elegir modelo, &modelo=BOX | VIGO | MAGE%20PHEV.
-            · Altura automática: el formulario envía {type:'dongfeng-td:altura', altura} y el iframe se ajusta.
-            · Conversión: tras reservar envía {type:'dongfeng-td:reserva', concesionario, modelo};
-              la página vuelve al formulario y lanza "test_drive_reservado" en dataLayer (sin datos personales).
-            · Solo se aceptan mensajes de *.googleusercontent.com.
-          -->
-          <iframe
-            id="df-form"
-            class="form-frame"
-            title="Reserva tu test drive Dongfeng"
-            src="https://script.google.com/macros/s/AKfycbxM80tO62p3YaXukwyRmLZia9tl1GC_YedfIfWZEmVw-yGmt2DOCQw8G9HnF7sA6S9Q/exec?origen=web-dongfeng"
-            loading="lazy"
-            allow="clipboard-write"
-            referrerpolicy="strict-origin-when-cross-origin"></iframe>
-          <div class="form-loading" id="form-loading">Cargando formulario…</div>
+            <fieldset>
+              <legend>Concesionario y modelo</legend>
+              <div class="dff-campo">
+                <label for="dff-concesionario">Concesionario</label>
+                <select id="dff-concesionario" required aria-describedby="dff-err-concesionario">
+                  <option value="">Selecciona un concesionario</option>
+                </select>
+                <p class="dff-err" id="dff-err-concesionario"></p>
+              </div>
+              <div class="dff-campo">
+                <label for="dff-modelo">Modelo</label>
+                <select id="dff-modelo" required aria-describedby="dff-err-modelo">
+                  <option value="">Selecciona un modelo</option>
+                </select>
+                <p class="dff-err" id="dff-err-modelo"></p>
+              </div>
+            </fieldset>
+
+            <fieldset id="dff-bloque-franja" hidden>
+              <legend>¿Cuándo te llamamos?</legend>
+              <div class="dff-campo">
+                <label for="dff-franja" class="dff-sr">Mejor momento para llamarte</label>
+                <select id="dff-franja">
+                  <option value="">Cuando sea</option>
+                  <option value="manana">Por la mañana</option>
+                  <option value="tarde">Por la tarde</option>
+                </select>
+              </div>
+            </fieldset>
+
+            <fieldset id="dff-bloque-cita">
+              <legend>Día y hora</legend>
+              <div class="dff-aviso" id="dff-estado" aria-live="polite">Selecciona un concesionario para ver los huecos disponibles.</div>
+              <div id="dff-cita" hidden>
+                <div class="dff-dias" id="dff-dias" role="group" aria-label="Días con disponibilidad"></div>
+                <p class="dff-titulo-dia" id="dff-titulo-dia"></p>
+                <div class="dff-horas" id="dff-horas" role="group" aria-label="Horas disponibles"></div>
+              </div>
+              <p class="dff-err" id="dff-err-cita" role="alert"></p>
+            </fieldset>
+
+            <fieldset>
+              <legend class="dff-sr">Privacidad</legend>
+              <div class="dff-check">
+                <input type="checkbox" id="dff-privacidad" required aria-describedby="dff-err-privacidad">
+                <label for="dff-privacidad">He leído y acepto la <a id="dff-link-privacidad" href="#" target="_blank" rel="noopener">política de privacidad</a>.</label>
+              </div>
+              <p class="dff-err" id="dff-err-privacidad"></p>
+              <div class="dff-check" id="dff-bloque-comercial" hidden>
+                <input type="checkbox" id="dff-comercial">
+                <label for="dff-comercial">Quiero recibir novedades y ofertas de Dongfeng (opcional).</label>
+              </div>
+              <p class="dff-legal" id="dff-legal"></p>
+            </fieldset>
+
+            <div class="dff-hp" aria-hidden="true">
+              <label for="dff-web">No rellenes este campo</label>
+              <input id="dff-web" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <p class="dff-err dff-general" id="dff-err-general" role="alert"></p>
+            <button class="btn btn--primary dff-enviar" id="dff-enviar" type="submit">Reservar test drive</button>
+            <p class="dff-resumen" id="dff-resumen"></p>
+          </form>
+
+          <section class="dff-ok" id="dff-ok" hidden tabindex="-1" aria-live="polite">
+            <div class="dff-ok-hero" id="dff-ok-hero">
+              <img id="dff-ok-img" alt="">
+              <span class="dff-sello"><span aria-hidden="true">✓</span> Reserva confirmada</span>
+            </div>
+            <h3 class="h-md" id="dff-ok-titulo">¡Te esperamos!</h3>
+            <p class="dff-ok-modelo" id="dff-ok-modelo"></p>
+            <div class="dff-tarjetas" id="dff-ok-tarjetas"></div>
+            <div class="dff-acciones">
+              <a class="btn btn--primary" id="dff-ok-agenda" target="_blank" rel="noopener">Añadir a mi calendario</a>
+              <a class="btn btn--ghost" id="dff-ok-mapa" target="_blank" rel="noopener">Cómo llegar</a>
+            </div>
+            <div class="dff-catalogo" id="dff-ok-catalogo" hidden>
+              <div>
+                <strong id="dff-ok-catalogo-titulo">Catálogo</strong>
+                <span>Descubre todos los detalles, el equipamiento y los acabados antes de tu prueba.</span>
+              </div>
+              <a class="btn btn--ghost" id="dff-ok-catalogo-enlace" target="_blank" rel="noopener">Ver catálogo (PDF)</a>
+            </div>
+            <div class="dff-nota">
+              <strong>Antes de venir</strong>
+              <ul id="dff-ok-nota"></ul>
+            </div>
+            <button type="button" class="dff-enlace" id="dff-otra">Hacer otra reserva</button>
+          </section>
+
+          <section class="dff-ok" id="dff-ok-llamada" hidden tabindex="-1" aria-live="polite">
+            <span class="dff-sello dff-sello--suelto"><span aria-hidden="true">✓</span> Solicitud recibida</span>
+            <h3 class="h-md" id="dff-ll-titulo">¡Gracias!</h3>
+            <p class="dff-ll-texto" id="dff-ll-texto"></p>
+            <div class="dff-tarjetas" id="dff-ll-tarjetas"></div>
+            <button type="button" class="dff-enlace" id="dff-ll-volver">Volver al formulario</button>
+          </section>
         </div>
-        <p class="form-fallback">¿No ves el formulario? <a id="form-fallback-link" href="https://script.google.com/macros/s/AKfycbxM80tO62p3YaXukwyRmLZia9tl1GC_YedfIfWZEmVw-yGmt2DOCQw8G9HnF7sA6S9Q/exec?origen=web-dongfeng" target="_blank" rel="noopener">Ábrelo aquí</a></p>
       </div>
     </div>
   </section>
@@ -1055,30 +1157,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   if (tick()) { var timer = setInterval(function(){ if (!tick()) clearInterval(timer); }, 1000); }
 
   /* ---------- Preselección de modelo y tracking de CTA ---------- */
-  var frame = document.getElementById("df-form");
-  var fallback = document.getElementById("form-fallback-link");
   var pill = document.getElementById("model-pill");
-  var loading = document.getElementById("form-loading");
-  var sel = { modelo: null, concesionario: null };
-
-  frame.addEventListener("load", function(){ loading.classList.add("is-hidden"); });
-
-  // Recarga el formulario con modelo y/o concesionario preseleccionados.
-  // El formulario debe leer ?modelo= y ?concesionario= (este último: acordar con quien mantiene el Apps Script).
+  var sel = { modelo: null, concesionario: null, dealer: null };
+  // Preselección en el formulario nativo (formulario.js expone window.DFF).
   function setSelection(key, value){
     if (!value || sel[key] === value) return;
     sel[key] = value;
-    var url = FORM_URL + "?origen=web-dongfeng";
-    if (sel.modelo) url += "&modelo=" + encodeURIComponent(sel.modelo);
-    if (sel.concesionario) url += "&concesionario=" + encodeURIComponent(sel.concesionario);
-    loading.classList.remove("is-hidden");
-    frame.src = url;
-    fallback.href = url;
     var parts = [];
     if (sel.modelo) parts.push("Dongfeng " + sel.modelo);
     if (sel.concesionario) parts.push(sel.concesionario);
     pill.textContent = "Has elegido: " + parts.join(" · ");
     pill.classList.add("is-visible");
+    if (window.DFF) window.DFF.preseleccionar(key === "modelo" ? { modelo: value } : (sel.dealer || {}));
   }
   function setModel(model){ setSelection("modelo", model); }
 
@@ -1092,6 +1182,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     book.className = "dealer__book js-cta";
     book.href = "#reserva";
     book.setAttribute("data-dealer", name);
+    book.setAttribute("data-prov", li.querySelector(".dealer__prov").textContent);
+    book.setAttribute("data-dir", li.querySelector("p") ? li.querySelector("p").textContent : "");
     book.textContent = "Reservar aquí";
     li.insertBefore(wrap, maps);
     wrap.appendChild(book);
@@ -1108,6 +1200,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       document.getElementById("reserva").scrollIntoView({ behavior: smooth ? "smooth" : "auto" });
       if (history.replaceState) history.replaceState(null, "", "#reserva");
       window.dataLayer.push({ event: "cta_click", cta_location: a.closest("section,header,div[id]") ? (a.closest("section,header,div[id]").id || "header") : "", model: model || "", concesionario: dealer || "" });
+      if (dealer) sel.dealer = { provincia: a.getAttribute("data-prov"), direccion: a.getAttribute("data-dir") };
       setModel(model);
       setSelection("concesionario", dealer);
     });
@@ -1251,21 +1344,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
 
   /* ---------- Altura automática y conversión vía postMessage ---------- */
-  window.addEventListener("message", function(e){
-    var host = "";
-    try { host = new URL(e.origin).hostname; } catch (err) { return; }
-    if (!/\.googleusercontent\.com$/.test(host)) return;   // solo mensajes del formulario
-    var d = e.data || {};
-    if (d.type === "dongfeng-td:altura" && d.altura > 200) {
-      frame.style.height = (Math.ceil(d.altura) + 48) + "px";   // +48: el formulario mide solo #app y deja ~20 px fuera (BOM antes de #app); sin margen su documento queda con scroll propio y en iOS atrapa el dedo        // altura automática, sin barras de desplazamiento
-    }
-    if (d.type === "dongfeng-td:reserva") {
-      frame.scrollIntoView({ behavior: "smooth", block: "start" });
-      // Conversión para Google Tag Manager / GA4 (sin datos personales)
-      window.dataLayer.push({ event: "test_drive_reservado", concesionario: d.concesionario, modelo: d.modelo });
-      window.dataLayer.push({ event: "generate_lead", form_name: "test_drive_magic_days", dealer: d.concesionario || "", model: d.modelo || "" });
-    }
-  });
+  // (formulario nativo) test_drive_reservado y generate_lead los lanza formulario.js tras reservar.
 
   /* ---------- CTA flotante: visible tras el hero, oculto sobre el formulario ---------- */
   var sticky = document.getElementById("sticky-cta");
@@ -1295,5 +1374,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 // Enlace «*» del hero: abre el legal completo y salta a la nota de la oferta.
 document.querySelectorAll("[data-open-legal]").forEach(function(a){a.addEventListener("click",function(){var d=document.getElementById("legal-details");if(d)d.open=true;});});
 </script>
+<script>window.DFF_ENDPOINT = "https://script.google.com/macros/s/AKfycbxM80tO62p3YaXukwyRmLZia9tl1GC_YedfIfWZEmVw-yGmt2DOCQw8G9HnF7sA6S9Q/exec";</script>
+<script src="formulario.js" defer></script>
 </body>
 </html>
