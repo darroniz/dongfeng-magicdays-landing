@@ -1,18 +1,12 @@
 <!doctype html>
 <html lang="es">
 <head>
-<!-- Google Tag Manager (contenedor Dongfeng, el mismo que BOX, VIGO y MAGE) -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-P5RVP4GS');</script>
-<!-- End Google Tag Manager -->
-<!-- Banner de cookies (CMP Rigor de dongfeng-auto.es): Rigor emite un token por landing.
-     Cuando llegue el de magicdays.dongfeng-auto.es, quitar el bloque GTM de arriba y su noscript
-     y poner aquí:  <script src="https://cookies.rigorcg.pt/script/?token=TOKEN_MAGICDAYS"></script>
-     (el CMP carga él mismo GTM-P5RVP4GS con Consent Mode). Con un token que no acepte el dominio,
-     el CMP aborta y no carga GTM: no publicarlo sin comprobar antes el código 0. -->
+<!-- Banner de cookies + Consent Mode + GTM-P5RVP4GS (contenedor Dongfeng, el mismo que BOX, VIGO y MAGE).
+     Provisional, nuestro, con el mismo aspecto y comportamiento que el CMP de Rigor de dongfeng-auto.es
+     (cookie rgcOptin). Cuando Rigor emita el token de magicdays.dongfeng-auto.es y dé código 0, sustituir
+     estas dos líneas por:  <script src="https://cookies.rigorcg.pt/script/?token=TOKEN_MAGICDAYS"></script> -->
+<link rel="stylesheet" href="/cookies/cmp.css">
+<script src="/cookies/cmp.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MAGIC DAYS Dongfeng: test drive de coches eléctricos | 9-12 dic</title>
@@ -478,10 +472,6 @@ a.press__card:hover{border-color:var(--df-ink);transform:translateY(-2px)}
 <link rel="stylesheet" href="formulario.css">
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P5RVP4GS"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <!--
   RECORRIDO DE CONVERSIÓN (lead-magnets-and-funnels)
@@ -1097,6 +1087,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="footer__bottom">
       <span>© 2026 Dongfeng España</span>
       <a href="https://drive.google.com/drive/u/0/folders/136miUXOpf13DYom_xgbveNnOzWB6--mV" target="_blank" rel="noopener">Política de privacidad</a>
+      <a href="#" class="js-rgc-open-cookies-settings">Cookies</a>
     </div>
   </div>
 </footer>
